@@ -1,0 +1,6 @@
+*/migrations/*
+*/__pycache__/*
+
+# */tests/__pycache__/*
+
+*.sqlite3
