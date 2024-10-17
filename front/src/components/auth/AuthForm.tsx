@@ -78,11 +78,6 @@ export default function AuthForm({ mode, onSubmit }: AuthFormProps) {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="bg-black text-white p-4">
-        <div className="container mx-auto">
-          <h1 className="text-2xl font-bold">CherryPicker</h1>
-        </div>
-      </header>
       <main className="container mx-auto mt-8 px-4">
         <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-6">
           <div>
