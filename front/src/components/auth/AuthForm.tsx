@@ -77,7 +77,7 @@ export default function AuthForm({ mode, onSubmit }: AuthFormProps) {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-transparent">
       <main className="container mx-auto mt-8 px-4">
         <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-6">
           <div>
@@ -226,13 +226,13 @@ export default function AuthForm({ mode, onSubmit }: AuthFormProps) {
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               required
             />
-            <Label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
+            <Label htmlFor="terms" className="ml-2 block text-sm text-gray-900 dark:text-zinc-50">
               만 14세 이상입니다. (필수)
             </Label>
           </div>
 
           <div>
-            <Button type="submit" className="w-full bg-black hover:bg-gray-800 text-white">
+            <Button type="submit" className="w-full bg-black hover:bg-gray-800 text-white dark:bg-white dark:text-black dark:hover:bg-gray-800">
               가입하기
             </Button>
           </div>

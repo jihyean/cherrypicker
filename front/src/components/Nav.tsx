@@ -72,7 +72,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 hover:text-gray-700"
+      className="inline-flex items-center px-1 pt-1 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50"
     >
       {children}
     </Link>
