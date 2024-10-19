@@ -2,9 +2,27 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Moon, Sun } from 'lucide-react'
+import { Moon, Sun, CircleUserRound, Mail, Cherry } from 'lucide-react'
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
+import { CalendarDays } from "lucide-react"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+
+const user_data = {
+  user_id: "12345",
+  user_name: "John Doe",
+  user_gender: true,  // true: 남성, false: 여성
+  user_email: "johndoe@example.com",
+  user_created_at: "2023-01-15"
+};
+
+interface UserData {
+  user_id: string;
+  user_name: string;
+  user_gender: boolean;
+  user_email: string;
+  user_created_at: string;
+}
 
 export default function NavBar() {
   const { theme, setTheme } = useTheme()
@@ -49,8 +67,11 @@ export default function NavBar() {
               <NavLink href="/snap">SNAP</NavLink>
               <NavLink href="/outfit">Outfit</NavLink>
               <NavLink href="/product">Product</NavLink>
-              {/* <NavLink href="/view">View</NavLink> */}
-              <NavLink href="/profile">Profile</NavLink>
+              <NavLink href="/login">Login</NavLink>
+              <NavLink href="/register">Register</NavLink>
+              {/* 추후 사용자 이름으로 설정 예정 */}
+              <ProfileHoverCard user_data={user_data}></ProfileHoverCard>
+              {/* <NavLink href="/profile">Profile</NavLink> */}
             </div>
             <Button
               variant="ghost"
@@ -76,5 +97,43 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
     >
       {children}
     </Link>
+  )
+}
+
+
+function ProfileHoverCard({ user_data }: { user_data: UserData }) {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <Button variant="link" className='inline-flex items-center px-1 pt-1 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50'>
+          @_{user_data.user_id}
+        </Button>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-80">
+        <div className="flex justify-between space-x-4">
+          {/* <Avatar>
+            <AvatarImage src="https://github.com/vercel.png" />
+            <AvatarFallback>VC</AvatarFallback>
+          </Avatar> */}
+          <div className="space-y-1">
+            <h4 className="flex items-center gap-1 text-sm font-semibold">
+              <CircleUserRound size="20"/>
+              <p>{user_data.user_name}</p>
+            </h4>
+            <p className="flex gap-1 text-sm font-semibold">
+              <Mail size="20"/> 
+              <p>{user_data.user_email}</p>
+            </p>
+            <div className="flex items-center gap-1 pt-2">
+              <CalendarDays className="mr-2 h-4 w-4 opacity-70" />
+              <span className="text-xs text-muted-foreground">
+                Joined {user_data.user_created_at}
+              </span>
+              <Cherry className="mr-2 h-4 w-4 opacity-70"/>
+            </div>
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
   )
 }
