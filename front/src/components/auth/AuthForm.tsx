@@ -119,121 +119,125 @@ export default function AuthForm({ mode, onSubmit }: AuthFormProps) {
               </button>
             </div>
           </div>
+          
+          {/* 회원가입시에만 표시 */}
+          {mode === 'signup' && (
+            <>
+              <div>
+                <Label htmlFor="confirmPassword">비밀번호 확인</Label>
+                <div className="mt-1 flex">
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    required
+                    className="flex grow"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    disabled={isPasswordConfirm}
+                  />
+                  <Button
+                    type="button"
+                    onClick={handlePasswordConfirm}
+                    className="ml-2"
+                    disabled={isPasswordConfirm}
+                  >
+                    {isPasswordConfirm ? '완료' : '확인'}
+                  </Button>
+                </div>
+              </div>
 
-          <div>
-            <Label htmlFor="confirmPassword">비밀번호 확인</Label>
-            <div className="mt-1 flex">
-              <Input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                required
-                className="flex grow"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                disabled={isPasswordConfirm}
-              />
-              <Button
-                type="button"
-                onClick={handlePasswordConfirm}
-                className="ml-2"
-                disabled={isPasswordConfirm}
-              >
-                {isPasswordConfirm ? '완료' : '확인'}
-              </Button>
-            </div>
-          </div>
+              <div>
+                <Label htmlFor="user_name">이름</Label>
+                <Input
+                  id="user_name"
+                  name="user_name"
+                  type="text"
+                  required
+                  className="mt-1"
+                  value={formData.user_name}
+                  onChange={handleChange}
+                />
+              </div>
 
-          <div>
-            <Label htmlFor="user_name">이름</Label>
-            <Input
-              id="user_name"
-              name="user_name"
-              type="text"
-              required
-              className="mt-1"
-              value={formData.user_name}
-              onChange={handleChange}
-            />
-          </div>
+              <div>
+                <Label htmlFor="user_gender">성별</Label>
+                <Select onValueChange={handleSelectChange}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="성별 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">남성</SelectItem>
+                    <SelectItem value="female">여성</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <div>
-            <Label htmlFor="user_gender">성별</Label>
-            <Select onValueChange={handleSelectChange}>
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder="성별 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">남성</SelectItem>
-                <SelectItem value="female">여성</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+              <div>
+                <Label htmlFor="user_email">이메일</Label>
+                <div className="mt-1 flex">
+                  <Input
+                    id="user_email"
+                    name="user_email"
+                    type="email"
+                    required
+                    className="flex-grow"
+                    value={formData.user_email}
+                    onChange={handleChange}
+                    disabled={isEmailVerified}
+                  />
+                  <Button
+                    type="button"
+                    onClick={sendEmail}
+                    className="ml-2"
+                    disabled={isEmailVerified}
+                  >
+                    {isEmailVerified ? '전송됨' : '전송'}
+                  </Button>
+                </div>
+              </div>
 
-          <div>
-            <Label htmlFor="user_email">이메일</Label>
-            <div className="mt-1 flex">
-              <Input
-                id="user_email"
-                name="user_email"
-                type="email"
-                required
-                className="flex-grow"
-                value={formData.user_email}
-                onChange={handleChange}
-                disabled={isEmailVerified}
-              />
-              <Button
-                type="button"
-                onClick={sendEmail}
-                className="ml-2"
-                disabled={isEmailVerified}
-              >
-                {isEmailVerified ? '전송됨' : '전송'}
-              </Button>
-            </div>
-          </div>
+              <div>
+                <Label htmlFor="user_email_verified">이메일 인증</Label>
+                <div className="mt-1 flex">
+                  <Input
+                    id="user_email_verified"
+                    name="user_email_verified"
+                    type="text"
+                    required
+                    className="flex-grow"
+                    value={formData.user_email_verified}
+                    onChange={handleChange}
+                    disabled={isEmailVerified}
+                  />
+                  <Button
+                    type="button"
+                    onClick={verifyEmail}
+                    className="ml-2"
+                    disabled={isEmailVerified}
+                  >
+                    {isEmailVerified ? '인증됨' : '인증'}
+                  </Button>
+                </div>
+              </div>
 
-          <div>
-            <Label htmlFor="user_email_verified">이메일 인증</Label>
-            <div className="mt-1 flex">
-              <Input
-                id="user_email_verified"
-                name="user_email_verified"
-                type="text"
-                required
-                className="flex-grow"
-                value={formData.user_email_verified}
-                onChange={handleChange}
-                disabled={isEmailVerified}
-              />
-              <Button
-                type="button"
-                onClick={verifyEmail}
-                className="ml-2"
-                disabled={isEmailVerified}
-              >
-                {isEmailVerified ? '인증됨' : '인증'}
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex items-center">
-            <input
-              id="terms"
-              name="terms"
-              type="checkbox"
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              required
-            />
-            <Label htmlFor="terms" className="ml-2 block text-sm text-gray-900 dark:text-zinc-50">
-              만 14세 이상입니다. (필수)
-            </Label>
-          </div>
-
+              <div className="flex items-center">
+                <input
+                  id="terms"
+                  name="terms"
+                  type="checkbox"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  required
+                />
+                <Label htmlFor="terms" className="ml-2 block text-sm text-gray-900 dark:text-zinc-50">
+                  만 14세 이상입니다. (필수)
+                </Label>
+              </div>
+            </>
+          )}
           <div>
             <Button type="submit" className="w-full bg-black hover:bg-gray-800 text-white dark:bg-white dark:text-black dark:hover:bg-gray-800">
-              가입하기
+              {mode === 'login' ? '로그인' : '가입하기'}
             </Button>
           </div>
         </form>
