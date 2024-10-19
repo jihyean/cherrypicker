@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 interface AuthFormProps {
   mode: 'login' | 'signup'
-  onSubmit: (data:{user_id:string, password:string, confirmPassword:string, user_gender:boolean, user_email: string}) => void
+  onSubmit: (data:{user_id:string, password:string, confirmPassword:string, user_name: string, user_gender:boolean, user_email: string}) => void
 }
 
 export default function AuthForm({ mode, onSubmit }: AuthFormProps) {
@@ -38,7 +38,7 @@ export default function AuthForm({ mode, onSubmit }: AuthFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     //* 성별을 boolean으로 변환
     e.preventDefault();
-    if (isEmailVerified && isPasswordConfirm) {
+    if (isEmailVerified && isPasswordConfirm || mode === 'login') {
       const genderBoolean = formData.user_gender === 'male' ? true : false;
       onSubmit({ ...formData, user_gender: genderBoolean });
     } else {
