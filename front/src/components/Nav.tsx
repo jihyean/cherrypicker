@@ -70,8 +70,8 @@ export default function NavBar() {
               <NavLink href="/login">Login</NavLink>
               <NavLink href="/register">Register</NavLink>
               <NavLink href="/logout">Logout</NavLink>
-              {/* 추후 사용자 이름으로 설정 예정 */}
-              <ProfileHoverCard user_data={user_data}></ProfileHoverCard>
+              {/* 추후 사용자 이름으로 설정 예정 및 클릭시 프로필 수정 */}
+              <ProfileHoverCard href="/" user_data={user_data}></ProfileHoverCard>
               {/* <NavLink href="/profile">Profile</NavLink> */}
             </div>
             <Button
@@ -102,13 +102,15 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 }
 
 
-function ProfileHoverCard({ user_data }: { user_data: UserData }) {
+function ProfileHoverCard({ href, user_data }: { href: string; user_data: UserData }) {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
-        <Button variant="link" className='inline-flex items-center px-1 pt-1 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50'>
-          @_{user_data.user_id}
-        </Button>
+        <Link href={href}>
+          <Button variant="link" className='inline-flex items-center px-1 pt-1 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50'>
+            @_{user_data.user_id}
+          </Button>
+        </Link>
       </HoverCardTrigger>
       <HoverCardContent className="w-80">
         <div className="flex justify-between space-x-4">
