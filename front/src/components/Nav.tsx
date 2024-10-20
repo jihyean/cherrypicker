@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Moon, Sun, CircleUserRound, Mail, Cherry, Menu, X } from 'lucide-react'
+import { Moon, Sun, CircleUserRound, Mail, Cherry, Menu, X, Camera, Sparkles, Inbox, LogIn, LogOut, UserRoundPlus } from 'lucide-react'
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { CalendarDays } from "lucide-react"
@@ -85,13 +85,13 @@ export default function NavBar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="top" className="w-full">
-                <div className="flex flex-col space-y-4 mt-4">
-                  <NavLink href="/snap">SNAP</NavLink>
-                  <NavLink href="/outfit">Outfit</NavLink>
-                  <NavLink href="/product">Product</NavLink>
-                  <NavLink href="/login">Login</NavLink>
-                  <NavLink href="/register">Register</NavLink>
-                  <NavLink href="/logout">Logout</NavLink>
+                <div className="flex flex-col">
+                  <NavLink href="/snap"><Camera/><p className='pt-1'>SNAP</p></NavLink>
+                  <NavLink href="/outfit"><Sparkles/><p className='pt-1'>Outfit</p></NavLink>
+                  <NavLink href="/product"><Inbox/><p className='pt-1'>Product</p></NavLink>
+                  <NavLink href="/login"><LogIn/><p className='pt-1'>Login</p></NavLink>
+                  <NavLink href="/register"><UserRoundPlus/><p className='pt-1'>Register</p></NavLink>
+                  <NavLink href="/logout"><LogOut/><p className='pt-1'>Logout</p></NavLink>
                 </div>
               </SheetContent>
             </Sheet>
@@ -106,7 +106,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="inline-flex items-center px-1 pt-1 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50 dark:hover:text-zinc-300"
+      className="flex items-center gap-2 px-1 py-4 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50 dark:hover:text-zinc-300"
     >
       {children}
     </Link>
