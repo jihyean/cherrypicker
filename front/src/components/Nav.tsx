@@ -69,6 +69,7 @@ export default function NavBar() {
               <NavLink href="/product">Product</NavLink>
               <NavLink href="/login">Login</NavLink>
               <NavLink href="/register">Register</NavLink>
+              <NavLink href="/logout">Logout</NavLink>
               {/* 추후 사용자 이름으로 설정 예정 */}
               <ProfileHoverCard user_data={user_data}></ProfileHoverCard>
               {/* <NavLink href="/profile">Profile</NavLink> */}
