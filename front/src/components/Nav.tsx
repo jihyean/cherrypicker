@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Moon, Sun, CircleUserRound, Mail, Cherry } from 'lucide-react'
+import { Moon, Sun, CircleUserRound, Mail, Cherry, Menu, X } from 'lucide-react'
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { CalendarDays } from "lucide-react"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 const user_data = {
   user_id: "12345",
@@ -26,9 +27,9 @@ interface UserData {
 
 export default function NavBar() {
   const { theme, setTheme } = useTheme()
-  const [isDarkMode, setIsDarkMode] = useState(false) // false: light mode, true: dark mode
+  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
-  // 페이지 마운트 시에, 시스템의 기본 태마로 설정
   useEffect(() => {
     if (theme === "dark") {
       setIsDarkMode(true)
@@ -38,19 +39,13 @@ export default function NavBar() {
       setIsDarkMode(false)
       document.body.classList.add('light-mode')
     }
-  }, [])
+  }, [theme])
 
   const toggleDarkMode = () => {
-    if (!isDarkMode) {
-      setIsDarkMode(!isDarkMode)
-      document.body.classList.toggle('dark-mode')
-      setTheme("dark")
-      return
-    }
     setIsDarkMode(!isDarkMode)
-    // CSS class로 다크 모드 전환 처리
+    setTheme(isDarkMode ? "light" : "dark")
+    document.body.classList.toggle('dark-mode')
     document.body.classList.toggle('light-mode')
-    setTheme("light")
   }
 
   return (
@@ -62,27 +57,44 @@ export default function NavBar() {
               CherryPicker
             </Link>
           </div>
-          <div className="flex items-center">
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+          <div className="flex items-center gap-4">
+            {/* PC */}
+            <div className="hidden md:flex md:gap-3">
               <NavLink href="/snap">SNAP</NavLink>
               <NavLink href="/outfit">Outfit</NavLink>
               <NavLink href="/product">Product</NavLink>
               <NavLink href="/login">Login</NavLink>
               <NavLink href="/register">Register</NavLink>
               <NavLink href="/logout">Logout</NavLink>
-              {/* 추후 사용자 이름으로 설정 예정 및 클릭시 프로필 수정 */}
-              <ProfileHoverCard href="/" user_data={user_data}></ProfileHoverCard>
-              {/* <NavLink href="/profile">Profile</NavLink> */}
             </div>
+            <ProfileHoverCard href="/" user_data={user_data} />
             <Button
               variant="ghost"
               size="icon"
               aria-label="Toggle dark mode"
-              className="ml-4"
+              className=""
               onClick={toggleDarkMode}
             >
               {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
+            {/* Mobile */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden ml-2">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="top" className="w-full">
+                <div className="flex flex-col space-y-4 mt-4">
+                  <NavLink href="/snap">SNAP</NavLink>
+                  <NavLink href="/outfit">Outfit</NavLink>
+                  <NavLink href="/product">Product</NavLink>
+                  <NavLink href="/login">Login</NavLink>
+                  <NavLink href="/register">Register</NavLink>
+                  <NavLink href="/logout">Logout</NavLink>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
@@ -94,30 +106,25 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   return (
     <Link
       href={href}
-      className="inline-flex items-center px-1 pt-1 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50"
+      className="inline-flex items-center px-1 pt-1 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50 dark:hover:text-zinc-300"
     >
       {children}
     </Link>
   )
 }
 
-
 function ProfileHoverCard({ href, user_data }: { href: string; user_data: UserData }) {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
         <Link href={href}>
-          <Button variant="link" className='inline-flex items-center px-1 pt-1 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50'>
+          <Button variant="link" className='inline-flex items-center px-1 pt-1 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50 dark:hover:text-zinc-300'>
             @_{user_data.user_id}
           </Button>
         </Link>
       </HoverCardTrigger>
       <HoverCardContent className="w-80">
         <div className="flex justify-between space-x-4">
-          {/* <Avatar>
-            <AvatarImage src="https://github.com/vercel.png" />
-            <AvatarFallback>VC</AvatarFallback>
-          </Avatar> */}
           <div className="space-y-1">
             <h4 className="flex items-center gap-1 text-sm font-semibold">
               <CircleUserRound size="20"/>
