@@ -172,7 +172,7 @@ REST_FRAMEWORK = {
 REST_USE_JWT = True
 
 # Custom user model (커스텁 유저 모델 사용시)
-# AUTH_USER_MODEL = "users.Users"
+AUTH_USER_MODEL = "users.User"
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
