@@ -31,7 +31,7 @@ export const login = createAsyncThunk(
   async ({ user_id, password }: LoginFormModel) => {
     const response = await RequestLogin({ user_id, password });
 		console.log(response)
-		if (response.status !== 200) {
+		if (response.state !== 200) {
 			throw new Error(response.message);
 		}
     return response;
@@ -42,7 +42,7 @@ export const register = createAsyncThunk(
   'auth/register',
   async ({ user_id, password, user_name, user_email, user_gender }: RegisterFormModel) => {
     const response = await RequestRegister({ user_id, password, user_name, user_email, user_gender });
-		if (response.status !== 201) {
+		if (response.state !== 201) {
 			throw new Error(response.message);
 		}
     return response;

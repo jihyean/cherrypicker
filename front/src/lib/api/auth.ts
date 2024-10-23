@@ -32,7 +32,8 @@ export const RequestLogin = async ({ user_id, password }: LoginFormModel): Promi
 	return {
 		message: data.message,
 		data: data.data,
-		status: data.status
+		state: data.state,
+		error: data.error
 	}
 }
 
@@ -46,14 +47,15 @@ export type RegisterFormModel = {
 }
 export type ResponseRegister = null
 export const RequestRegister = async ({ user_id, password, user_name, user_email, user_gender }: RegisterFormModel): Promise<Response<ResponseRegister>> => {
-	const data = await fetchWithoutAuth('/register', {
+	const data = await fetchWithoutAuth('/users/account/', {
 		method: 'POST',
 		body: JSON.stringify({ user_id, password, user_name, user_email, user_gender })
 	})
 	return {
 		message: data.message,
 		data: data.data,
-		status: data.status
+		state: data.state,
+		error: data.error
 	}
 }
 

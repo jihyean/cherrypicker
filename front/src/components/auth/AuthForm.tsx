@@ -7,9 +7,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
+
 interface AuthFormProps {
   mode: 'login' | 'signup'
-  onSubmit: (data:{user_id:string, password:string, confirmPassword:string, user_name: string, user_gender:boolean, user_email: string}) => void
+  onSubmit: (data: Record<string, string | boolean>) => void
 }
 
 export default function AuthForm({ mode, onSubmit }: AuthFormProps) {

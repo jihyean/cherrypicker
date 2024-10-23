@@ -1,6 +1,9 @@
+
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import ReduxProvider from "@/components/ReduxProvider";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -18,15 +21,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <title>CherryPicker</title>
       </head>
       <body>
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-          <Nav />
-          {children}
-        </ThemeProvider>
+        <ReduxProvider>
+          <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+            <Nav />
+            {children}
+          </ThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   )
