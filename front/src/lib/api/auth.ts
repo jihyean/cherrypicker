@@ -25,7 +25,7 @@ type ResponseLoginUser = {
 	refresh_token: string | null
 }
 export const RequestLogin = async ({ user_id, password }: LoginFormModel): Promise<Response<ResponseLoginUser | null>> => {
-	const data = await fetchWithoutAuth('/login', {
+	const data = await fetchWithoutAuth('/users/auth/', {
 		method: 'POST',
 		body: JSON.stringify({ user_id, password })
 	})
