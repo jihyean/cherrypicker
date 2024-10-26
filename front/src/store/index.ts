@@ -12,18 +12,16 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
-// Redux Persist 설정
-const persistConfig = {
-  key: 'root',       // 저장소에 저장될 키
-  storage,           // localStorage 사용
+const authPersistConfig = {
+  key: 'auth',
+  storage,
 };
 
-// Reducer에 persist 적용
-const persistedReducer = persistReducer(persistConfig, authReducer);
+const authPersistedReducer = persistReducer(authPersistConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
-    auth: persistedReducer,  // Persisted Reducer 사용
+    auth: authPersistedReducer,  // Persisted Reducer 사용
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

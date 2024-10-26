@@ -4,6 +4,7 @@ import {
 	RequestLogin, RequestRegister,
 	LoginFormModel, RegisterFormModel,
 } from '@/lib/api/auth';
+import Cookies from 'js-cookie';
 
 interface AuthState {
   user: UserModel | null;
@@ -69,9 +70,9 @@ const authSlice = createSlice({
       state.user = null;
       state.access_token = null;
       state.refresh_token = null;
-      localStorage.removeItem('user');
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      Cookies.remove('user');
+      Cookies.remove('access_token');
+      Cookies.remove('refresh_token');
     },
     resetRegistrationSuccess: (state) => {
       state.registrationSuccess = false;
@@ -92,9 +93,9 @@ const authSlice = createSlice({
         state.user = action.payload.data.user;
         state.access_token = action.payload.data.access_token;
         state.refresh_token = action.payload.data.refresh_token;
-        localStorage.setItem('user', JSON.stringify(action.payload.data.user));
-        localStorage.setItem('access_token', action.payload.data.access_token);
-        localStorage.setItem('refresh_token', action.payload.data.refresh_token);
+        Cookies.set('user', JSON.stringify(action.payload.data.user), { expires: 1 });
+        Cookies.set('access_token', action.payload.data.access_token, { expires: 1 });
+        Cookies.set('refresh_token', action.payload.data.refresh_token, { expires: 1 });
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;

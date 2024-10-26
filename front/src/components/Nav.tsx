@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import Link from 'next/link'
 import { Moon, Sun, CircleUserRound, Mail, Cherry, Menu, X, Camera, Sparkles, Inbox, LogIn, LogOut, UserRoundPlus } from 'lucide-react'
 import { useTheme } from "next-themes"
@@ -8,14 +9,9 @@ import { Button } from "@/components/ui/button"
 import { CalendarDays } from "lucide-react"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { RootState } from "@/store"
+import { useRouter } from 'next/navigation'
 
-const user_data = {
-  user_id: "12345",
-  user_name: "John Doe",
-  user_gender: true,  // true: 남성, false: 여성
-  user_email: "johndoe@example.com",
-  user_created_at: "2023-01-15"
-};
 
 interface UserData {
   user_id: string;
@@ -26,9 +22,12 @@ interface UserData {
 }
 
 export default function NavBar() {
+  const router = useRouter()
+
   const { theme, setTheme } = useTheme()
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const user = useSelector((state: RootState) => state.auth.user)
 
   useEffect(() => {
     if (theme === "dark") {
@@ -40,6 +39,12 @@ export default function NavBar() {
       document.body.classList.add('light-mode')
     }
   }, [theme])
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+    }
+  }, [user]);
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
@@ -63,11 +68,12 @@ export default function NavBar() {
               <NavLink href="/snap">SNAP</NavLink>
               <NavLink href="/outfit">Outfit</NavLink>
               <NavLink href="/product">Product</NavLink>
-              <NavLink href="/login">Login</NavLink>
-              <NavLink href="/register">Register</NavLink>
-              <NavLink href="/logout">Logout</NavLink>
+              
+              {!user && <NavLink href="/login">Login</NavLink>}
+              {!user && <NavLink href="/register">Register</NavLink>}
+              {user && <NavLink href="/logout">Logout</NavLink>}
             </div>
-            <ProfileHoverCard href="/" user_data={user_data} />
+            {user && <ProfileHoverCard href="/" user_data={user} />}
             <Button
               variant="ghost"
               size="icon"
@@ -89,9 +95,9 @@ export default function NavBar() {
                   <NavLink href="/snap"><Camera/><p className='pt-1'>SNAP</p></NavLink>
                   <NavLink href="/outfit"><Sparkles/><p className='pt-1'>Outfit</p></NavLink>
                   <NavLink href="/product"><Inbox/><p className='pt-1'>Product</p></NavLink>
-                  <NavLink href="/login"><LogIn/><p className='pt-1'>Login</p></NavLink>
-                  <NavLink href="/register"><UserRoundPlus/><p className='pt-1'>Register</p></NavLink>
-                  <NavLink href="/logout"><LogOut/><p className='pt-1'>Logout</p></NavLink>
+                  {!user && <NavLink href="/login"><LogIn/><p className='pt-1'>Login</p></NavLink>}
+                  {!user && <NavLink href="/register"><UserRoundPlus/><p className='pt-1'>Register</p></NavLink>}
+                  {user && <NavLink href="/logout"><LogOut/><p className='pt-1'>Logout</p></NavLink>}
                 </div>
               </SheetContent>
             </Sheet>
@@ -132,7 +138,7 @@ function ProfileHoverCard({ href, user_data }: { href: string; user_data: UserDa
             </h4>
             <p className="flex gap-1 text-sm font-semibold">
               <Mail size="20"/> 
-              <p>{user_data.user_email}</p>
+              <span>{user_data.user_email}</span>
             </p>
             <div className="flex items-center gap-1 pt-2">
               <CalendarDays className="mr-2 h-4 w-4 opacity-70" />
