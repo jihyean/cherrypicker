@@ -1,7 +1,14 @@
 from django.db import models
+from django.db.models import TextChoices
 
 
 class Product(models.Model):
+    class ProductType(models.TextChoices):
+        TOP = "top", "상의/아우터"
+        BOTTOM = "bottom", "바지"
+        SKIRT = "skirt", "원피스/치마"
+        ETC = "etc", "기타"
+    
     product_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey('users.User', on_delete=models.CASCADE)
 
@@ -10,6 +17,7 @@ class Product(models.Model):
     product_comment = models.CharField(max_length=100)
     product_image = models.CharField(max_length=1000)
     product_state = models.CharField(max_length=15)
+    product_category = models.CharField(max_length=100, choices=ProductType.choices)
     product_is_onboard = models.BooleanField(default=True)
 
     class Meta:
@@ -27,6 +35,7 @@ class Product(models.Model):
             f"\tproduct_option='{self.product_option}',\n"
             f"\tproduct_image='{self.product_image}',\n"
             f"\tproduct_state='{self.product_state}',\n"
+            f"\tproduct_category='{self.product_category}',\n"
             f"\tproduct_is_onboard='{self.product_is_onboard}',\n"
             f"}}"
         )
