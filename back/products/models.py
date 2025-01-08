@@ -13,9 +13,9 @@ class Product(models.Model):
     user_id = models.ForeignKey('users.User', on_delete=models.CASCADE)
 
     product_name = models.CharField(max_length=30)
-    product_option = models.CharField(max_length=30)
-    product_comment = models.CharField(max_length=100)
-    product_image = models.CharField(max_length=1000)
+    product_option = models.CharField(max_length=30, null=True, blank=True)
+    product_comment = models.CharField(max_length=100, null=True, blank=True)
+    product_image = models.CharField(max_length=1000, null=True, blank=True)
     product_state = models.CharField(max_length=15)
     product_category = models.CharField(max_length=100, choices=ProductType.choices)
     product_is_onboard = models.BooleanField(default=True)
@@ -44,12 +44,12 @@ class Product(models.Model):
 #* top_sizes 상의/아우터
 class TopSize(models.Model):
     top_size_id = models.AutoField(primary_key=True)
-    product_id = models.OneToOneField(Product, on_delete=models.CASCADE)
+    product_id = models.OneToOneField(Product, on_delete=models.CASCADE, db_column='product_id')
 
-    top_size_total = models.IntegerField()
-    top_size_shoulder = models.IntegerField()
-    top_size_chest = models.IntegerField()
-    top_size_sleeve = models.IntegerField()
+    top_size_total = models.IntegerField(null=True)
+    top_size_shoulder = models.IntegerField(null=True)
+    top_size_chest = models.IntegerField(null=True)
+    top_size_sleeve = models.IntegerField(null=True)
 
     class Meta:
         db_table = 'top_sizes'
@@ -73,14 +73,14 @@ class TopSize(models.Model):
 #* bottom_sizes 하의
 class BottomSize(models.Model):
     bottom_size_id = models.AutoField(primary_key=True)
-    product_id = models.OneToOneField(Product, on_delete=models.CASCADE)
+    product_id = models.OneToOneField(Product, on_delete=models.CASCADE, db_column='product_id')
 
-    bottom_size_total = models.IntegerField()
-    bottom_size_waist = models.IntegerField()
-    bottom_size_hip = models.IntegerField()
-    bottom_size_thigh = models.IntegerField()
-    bottom_size_rise = models.IntegerField()
-    bottom_size_hem = models.IntegerField()
+    bottom_size_total = models.IntegerField(null=True)
+    bottom_size_waist = models.IntegerField(null=True)
+    bottom_size_hip = models.IntegerField(null=True)
+    bottom_size_thigh = models.IntegerField(null=True)
+    bottom_size_rise = models.IntegerField(null=True)
+    bottom_size_hem = models.IntegerField(null=True)
 
     class Meta:
         db_table = 'bottom_sizes'
@@ -106,15 +106,15 @@ class BottomSize(models.Model):
 #* skirt_sizes 원피스/치마 사이즈
 class SkirtSize(models.Model):
     skirt_size_id = models.AutoField(primary_key=True)
-    product_id = models.OneToOneField(Product, on_delete=models.CASCADE)
+    product_id = models.OneToOneField(Product, on_delete=models.CASCADE, db_column='product_id')
 
-    skirt_size_total = models.IntegerField()
-    skirt_size_shoulder = models.IntegerField()
-    skirt_size_chest = models.IntegerField()
-    skirt_size_sleeve = models.IntegerField()
-    skirt_size_hip = models.IntegerField()
-    skirt_size_waist = models.IntegerField()
-    skirt_size_hem = models.IntegerField()
+    skirt_size_total = models.IntegerField(null=True)
+    skirt_size_shoulder = models.IntegerField(null=True)
+    skirt_size_chest = models.IntegerField(null=True)
+    skirt_size_sleeve = models.IntegerField(null=True)
+    skirt_size_hip = models.IntegerField(null=True)
+    skirt_size_waist = models.IntegerField(null=True)
+    skirt_size_hem = models.IntegerField(null=True)
 
     class Meta:
         db_table = 'skirt_sizes'
