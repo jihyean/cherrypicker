@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
-import { Moon, Sun, CircleUserRound, Mail, Cherry, Menu, X, Camera, Sparkles, Inbox, LogIn, LogOut, UserRoundPlus } from 'lucide-react'
+import { Moon, Sun, CircleUserRound, Mail, Cherry, Menu, X, Camera, Sparkles, Inbox, LogIn, LogOut, UserRoundPlus, ChevronDown, Plus } from 'lucide-react'
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { CalendarDays } from "lucide-react"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { RootState } from "@/store"
 import { useRouter } from 'next/navigation'
 
@@ -67,7 +68,8 @@ export default function NavBar() {
             <div className="hidden md:flex md:gap-3">
               <NavLink href="/snap">SNAP</NavLink>
               <NavLink href="/outfit">Outfit</NavLink>
-              <NavLink href="/product">Product</NavLink>
+              {/* <NavLink href="/product">Product</NavLink> */}
+              <ProductDropdown />
               
               {!user && <NavLink href="/login">Login</NavLink>}
               {!user && <NavLink href="/register">Register</NavLink>}
@@ -94,7 +96,8 @@ export default function NavBar() {
                 <div className="flex flex-col">
                   <NavLink href="/snap"><Camera/><p className='pt-1'>SNAP</p></NavLink>
                   <NavLink href="/outfit"><Sparkles/><p className='pt-1'>Outfit</p></NavLink>
-                  <NavLink href="/product"><Inbox/><p className='pt-1'>Product</p></NavLink>
+                  <ProductDropdownMobile />
+                  {/* <NavLink href="/product"><Inbox/><p className='pt-1'>Product</p></NavLink> */}
                   {!user && <NavLink href="/login"><LogIn/><p className='pt-1'>Login</p></NavLink>}
                   {!user && <NavLink href="/register"><UserRoundPlus/><p className='pt-1'>Register</p></NavLink>}
                   {user && <NavLink href="/logout"><LogOut/><p className='pt-1'>Logout</p></NavLink>}
@@ -116,6 +119,45 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
     >
       {children}
     </Link>
+  )
+}
+
+function ProductDropdown() {
+  return (
+    <Popover>
+      <PopoverTrigger asChild className=''>
+        <Button variant="link" className="flex items-center gap-2 px-1 py-8 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50 dark:hover:text-zinc-300">
+          Product <ChevronDown className="h-4 w-4" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-48 p-2">
+        <div className="flex flex-col">
+          <NavLink href="/product">
+            <Inbox className="h-4 w-4" />
+            View Products
+          </NavLink>
+          <NavLink href="/product/add">
+            <Plus className="h-4 w-4" />
+            Add Product
+          </NavLink>
+        </div>
+      </PopoverContent>
+    </Popover>
+  )
+}
+
+function ProductDropdownMobile() {
+  return (
+    <div className="flex flex-col">
+      <NavLink href="/product">
+        <Inbox className="h-5 w-5" />
+        <p className='pt-1'>Products</p>
+      </NavLink>
+      <NavLink href="/product/add">
+        <Plus className="h-5 w-5 ml-5" />
+        <p className='pt-1'>Add Product</p>
+      </NavLink>
+    </div>
   )
 }
 
