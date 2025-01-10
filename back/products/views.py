@@ -51,6 +51,7 @@ class ProductArchiveAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
+        size_flag = True
         #* 상세 사이즈 카테고리에 구분 / 유효성 검사
         product_category = product_instance.product_category
         if product_category == 'top':
@@ -59,8 +60,8 @@ class ProductArchiveAPIView(APIView):
             size_serializer = BottomSizeCreateSerializer(data=request_data)
         elif product_category == 'skirt':
             size_serializer = SkirtSizeCreateSerializer(data=request_data)
-        elif product_category == 'etc':
-            pass
+        elif product_category == 'bag' or product_category == 'shoes' or product_category == 'etc':
+            size_flag = False
         else:
             return Response(
                 {   "data": None, 
@@ -71,7 +72,9 @@ class ProductArchiveAPIView(APIView):
             )
         
         #* 상세 사이즈 정보 insert
-        if size_serializer.is_valid():
+        if not size_flag: # 상세 사이즈 정보가 없는 경우
+            pass
+        elif size_serializer.is_valid():
             size_instance = SizeService.create_size(product_instance, size_serializer.validated_data)
         else:
             return Response(

@@ -7,6 +7,8 @@ class Product(models.Model):
         TOP = "top", "상의/아우터"
         BOTTOM = "bottom", "바지"
         SKIRT = "skirt", "원피스/치마"
+        BAG = "bag", "가방"
+        SHOES = "shoes", "신발"
         ETC = "etc", "기타"
     
     product_id = models.AutoField(primary_key=True)
