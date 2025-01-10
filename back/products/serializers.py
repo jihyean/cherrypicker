@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from .models import *
 from users.models import User
+from hashtags.models import Hashtag, ProductHashtag
 
 from django.core.exceptions import ValidationError
 

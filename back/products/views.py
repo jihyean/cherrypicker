@@ -2,9 +2,16 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+import json
+
 from common.utils import get_first_serializer_error, upload_file
+
 from .serializers import ProductCreateSerializer, TopSizeCreateSerializer, BottomSizeCreateSerializer, SkirtSizeCreateSerializer
+from hashtags.serializers import HashtagCreateSerializer
+
 from .services import ProductService, SizeService
+from hashtags.services import HashTagService, HashTagProductService
+
 
 
 class ProductArchiveAPIView(APIView):
@@ -22,6 +29,7 @@ class ProductArchiveAPIView(APIView):
     def put(self, request):
         request_data = request.data.copy()
         uploaded_file = request.FILES.get('product_image')
+        hashtag_name_list = json.loads(request_data.get('hashtag_name_list'))
         
         # 이미지 업로드 경로 추가
         file_save_path = upload_file(uploaded_file, 'product_images')
@@ -74,9 +82,24 @@ class ProductArchiveAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # TODO: hashtag insert
-        # service
-        # hashtags insert
+        # 해시태그 등록
+        for hashtag_name in hashtag_name_list:
+            hashtag_instance = HashTagService.get_hashtag(hashtag_name)
+            if hashtag_instance is None:
+                hashtag_serializer = HashtagCreateSerializer(data={'hashtag_name': hashtag_name})
+                if hashtag_serializer.is_valid():
+                    hashtag_instance = HashTagService.create_hashtag(hashtag_serializer.validated_data)
+                else:
+                    return Response(
+                        {   "data": None, 
+                            "state": 400, 
+                            "message": "올바르지 않은 해시태그 정보입니다", 
+                            "error": get_first_serializer_error(hashtag_serializer.errors)}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            
+            # 상품에 해시태그 등록
+            HashTagProductService.create_product_hashtag(product_instance, hashtag_instance)
         
         return Response(
             {   "data": None, 
