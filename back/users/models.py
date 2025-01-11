@@ -22,7 +22,7 @@ class UserManager(BaseUserManager):
             raise ValidationError('비밀번호는 8자 이상 20자 이하여야 합니다.')
         if not user_name:
             raise ValidationError('이름을 입력해야 합니다.')
-        if not user_gender:
+        if user_gender is None or user_gender == "":
             raise ValidationError('성별을 입력해야 합니다.')
         # if not user_created_at:
         #     raise ValidationError('가입일을 입력해야 합니다.')

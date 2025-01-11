@@ -1,8 +1,8 @@
 """
-URL configuration for back project.
+URL configuration for config project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
+    https://docs.djangoproject.com/en/4.2/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -16,10 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include  # include를 임포트
+from .views import *
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    
-    path('users/', include('users.urls')),
-    path('products/', include('products.urls')),
+    path('archive/', ProductArchiveAPIView.as_view()),
 ]
