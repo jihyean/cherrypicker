@@ -30,7 +30,7 @@ export default function AddProduct() {
   const [images, setImages] = useState<File[]>([])
   const [previewUrls, setPreviewUrls] = useState<string[]>([])
 
-  const [open, setOpen] = useState(false)
+
   const [value, setValue] = useState("")
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -243,6 +243,19 @@ export default function AddProduct() {
             </CardContent>
           </Card>
 
+          {/* 해시태그 카드 (모바일) */}
+          <Card className="md:hidden">
+            <CardContent className="pt-6">
+              <HashtagContent
+                hashtags={hashtags}
+                value={value}
+                setValue={setValue}
+                className='md:hidden'
+              />
+            </CardContent>
+          </Card>
+
+
           {/* 상품 정보 카드 */}
           <Card>
             <CardContent className="pt-6">
@@ -318,8 +331,7 @@ export default function AddProduct() {
                   hashtags={hashtags}
                   value={value}
                   setValue={setValue}
-                  open={open}
-                  setOpen={setOpen}
+                  className="hidden md:block"
                 />
               </CardContent>
             </Card>
@@ -373,8 +385,7 @@ type HashtagContentProps = {
   hashtags: { value: string; label: string }[]; // 프레임워크 리스트
   value: string; // 현재 선택된 프레임워크 값
   setValue: (value: string) => void; // 선택 값 변경 함수
-  open: boolean; // Popover 열림 상태
-  setOpen: (open: boolean) => void; // Popover 열림 상태 변경 함수
+  className?: string; // 클래스 이름
 };
 
 
@@ -382,9 +393,10 @@ function HashtagContent({
   hashtags,
   value,
   setValue,
-  open,
-  setOpen,
+  className,
+
 }: HashtagContentProps) {
+  const [open, setOpen] = useState(false)
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -402,7 +414,7 @@ function HashtagContent({
               <ChevronsUpDown className="opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="popover-content-width-full">
+          <PopoverContent className={`popover-content-width-full ${className}`}>
             <Command>
               <CommandInput placeholder="Search hashtags..." className="h-9" />
               <CommandList>
