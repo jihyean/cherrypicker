@@ -76,3 +76,12 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+
+/* How to make Combobox width relative to container #1690 */
+/* github.com/shadcn-ui/ui/issues/1690 */
+@layer utilities {
+  .popover-content-width-full {
+  @apply w-[var(--radix-popover-trigger-width)];
+  }
+  }
