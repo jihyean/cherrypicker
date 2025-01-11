@@ -131,28 +131,88 @@ export default function AddProduct() {
     }
   }
 
-  const frameworks = [
+  const hashtags = [
     {
-      value: "next.js",
-      label: "Next.js",
+      value: "casual",
+      label: "캐주얼",
     },
     {
-      value: "sveltekit",
-      label: "SvelteKit",
+      value: "formal",
+      label: "포멀",
     },
     {
-      value: "nuxt.js",
-      label: "Nuxt.js",
+      value: "sporty",
+      label: "스포티",
     },
     {
-      value: "remix",
-      label: "Remix",
+      value: "vintage",
+      label: "빈티지",
     },
     {
-      value: "astro",
-      label: "Astro",
+      value: "modern",
+      label: "모던",
     },
-  ]
+    {
+      value: "chic",
+      label: "시크",
+    },
+    {
+      value: "minimal",
+      label: "미니멀",
+    },
+    {
+      value: "retro",
+      label: "레트로",
+    },
+    {
+      value: "streetwear",
+      label: "스트릿웨어",
+    },
+    {
+      value: "summer",
+      label: "여름",
+    },
+    {
+      value: "winter",
+      label: "겨울",
+    },
+    {
+      value: "spring",
+      label: "봄",
+    },
+    {
+      value: "fall",
+      label: "가을",
+    },
+    {
+      value: "office",
+      label: "오피스룩",
+    },
+    {
+      value: "party",
+      label: "파티룩",
+    },
+    {
+      value: "daily",
+      label: "데일리룩",
+    },
+    {
+      value: "korean",
+      label: "한국 스타일",
+    },
+    {
+      value: "luxury",
+      label: "럭셔리",
+    },
+    {
+      value: "preppy",
+      label: "프레피",
+    },
+    {
+      value: "eco",
+      label: "에코 패션",
+    },
+  ];
 
 
   return (
@@ -254,53 +314,13 @@ export default function AddProduct() {
           <div className="hidden md:block">
             <Card>
               <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Popover open={open} onOpenChange={setOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          aria-expanded={open}
-                          className="w-full justify-between"
-                        >
-                          {value
-                            ? frameworks.find((framework) => framework.value === value)?.label
-                            : "Select framework..."}
-                          <ChevronsUpDown className="opacity-50" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="popover-content-width-full">
-                        <Command>
-                          <CommandInput placeholder="Search framework..." className="h-9" />
-                          <CommandList>
-                            <CommandEmpty>No framework found.</CommandEmpty>
-                            <CommandGroup>
-                              {frameworks.map((framework) => (
-                                <CommandItem
-                                  key={framework.value}
-                                  value={framework.value}
-                                  onSelect={(currentValue) => {
-                                    setValue(currentValue === value ? "" : currentValue)
-                                    setOpen(false)
-                                  }}
-                                >
-                                  {framework.label}
-                                  <Check
-                                    className={cn(
-                                      "ml-auto",
-                                      value === framework.value ? "opacity-100" : "opacity-0"
-                                    )}
-                                  />
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                </div>
+                <HashtagContent
+                  hashtags={hashtags}
+                  value={value}
+                  setValue={setValue}
+                  open={open}
+                  setOpen={setOpen}
+                />
               </CardContent>
             </Card>
           </div>
@@ -347,4 +367,71 @@ function CategoryContent({ setCategory }: { setCategory: (category: Category) =>
       </div>
     </div>
   )
+}
+
+type HashtagContentProps = {
+  hashtags: { value: string; label: string }[]; // 프레임워크 리스트
+  value: string; // 현재 선택된 프레임워크 값
+  setValue: (value: string) => void; // 선택 값 변경 함수
+  open: boolean; // Popover 열림 상태
+  setOpen: (open: boolean) => void; // Popover 열림 상태 변경 함수
+};
+
+
+function HashtagContent({
+  hashtags,
+  value,
+  setValue,
+  open,
+  setOpen,
+}: HashtagContentProps) {
+  return (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className="w-full justify-between"
+            >
+              {value
+                ? hashtags.find((hashtags) => hashtags.value === value)?.label
+                : "Select hashtag..."}
+              <ChevronsUpDown className="opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="popover-content-width-full">
+            <Command>
+              <CommandInput placeholder="Search hashtags..." className="h-9" />
+              <CommandList>
+                <CommandEmpty>No hashtag found.</CommandEmpty>
+                <CommandGroup>
+                  {hashtags.map((hashtags) => (
+                    <CommandItem
+                      key={hashtags.value}
+                      value={hashtags.value}
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue);
+                        setOpen(false);
+                      }}
+                    >
+                      {hashtags.label}
+                      <Check
+                        className={cn(
+                          "ml-auto",
+                          value === hashtags.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </div>
+  );
 }
