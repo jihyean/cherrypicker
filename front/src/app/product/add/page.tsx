@@ -1,32 +1,22 @@
 "use client"
 
 import { useState } from 'react'
-import { Check, ChevronsUpDown } from "lucide-react"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { ImagePlus, Save, Send } from 'lucide-react'
 
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Popover, PopoverContent,PopoverTrigger } from "@/components/ui/popover"
+import HashtagContent from "@/components/product/common/ProductHashtagContent"
+import ProductAddCategoryContent from "@/components/product/add/ProductAddCategoryContent"
 
+import { CATEGPRY_FIELD } from '@/types/product'
 
-type Category = "상의" | "하의" | "원피스" | "가방" | "신발" | "기타"
-type ProductStatus = "laundary" | "wishList" | "season-out" | "closet"
 
 export default function AddProduct() {
-  const [category, setCategory] = useState<Category | ''>('')
+  const [category, setCategory] = useState<CATEGPRY_FIELD | ''>('')
   const [images, setImages] = useState<File[]>([])
   const [previewUrls, setPreviewUrls] = useState<string[]>([])
   const [productHashTags, setProductHashTags] = useState<string[]>([]) // 제품 해시태그
@@ -258,7 +248,7 @@ export default function AddProduct() {
           {/* 카테고리 카드 (모바일) */}
           <Card className="md:hidden">
             <CardContent className="pt-6">
-              <CategoryContent setCategory={setCategory} />
+              <ProductAddCategoryContent setCategory={setCategory} />
             </CardContent>
           </Card>
 
@@ -351,7 +341,7 @@ export default function AddProduct() {
           <div className="hidden md:block">
             <Card>
               <CardContent className="pt-6">
-                <CategoryContent setCategory={setCategory} />
+                <ProductAddCategoryContent setCategory={setCategory} />
               </CardContent>
             </Card>
           </div>
@@ -390,123 +380,4 @@ export default function AddProduct() {
   )
 }
 
-function CategoryContent({ setCategory }: { setCategory: (category: Category) => void }) {
-  return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="category">카테고리</Label>
-        <Select onValueChange={(value) => setCategory(value as Category)}>
-          <SelectTrigger>
-            <SelectValue placeholder="카테고리 선택" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="상의">상의</SelectItem>
-            <SelectItem value="하의">하의</SelectItem>
-            <SelectItem value="원피스">원피스</SelectItem>
-            <SelectItem value="가방">가방</SelectItem>
-            <SelectItem value="신발">신발</SelectItem>
-            <SelectItem value="기타">기타</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="status">상품 상태</Label>
-        <Select>
-          <SelectTrigger>
-            <SelectValue placeholder="상품 상태 선택" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="laundary">세탁중</SelectItem>
-            <SelectItem value="wishList">위시리스트</SelectItem>
-            <SelectItem value="season-out">시즌아웃</SelectItem>
-            <SelectItem value="closet">옷장</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-  )
-}
-
-type HashtagContentProps = {
-  hashtags: { value: string; label: string }[]; // 프레임워크 리스트
-  value: string; // 현재 선택된 프레임워크 값
-  setValue: (value: string) => void; // 선택 값 변경 함수
-  className?: string; // 클래스 이름
-
-  handleHashTagChange: (tag: string) => void;
-};
-
-
-function HashtagContent({
-  hashtags,
-  value,
-  setValue,
-  className,
-  handleHashTagChange,
-}: HashtagContentProps) {
-  const [open, setOpen] = useState(false)
-
-  // 해시태그 입력 이후 엔터 키 입력시에 태그 추가
-  const handleAddEnterHashTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleHashTagChange(e.currentTarget.value)
-      setOpen(false)
-    }
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="w-full justify-between"
-            >
-              {value
-                ? hashtags.find((hashtags) => hashtags.value === value)?.label
-                : "Select hashtag..."}
-              <ChevronsUpDown className="opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className={`popover-content-width-full ${className}`}>
-            <Command>
-              <CommandInput 
-                placeholder="Search hashtags..." 
-                className="h-9"
-                onKeyDown={handleAddEnterHashTag}
-              />
-              <CommandList>
-                <CommandEmpty>No hashtag found.</CommandEmpty>
-                <CommandGroup>
-                  {hashtags.map((hashtags) => (
-                    <CommandItem
-                      key={hashtags.value}
-                      value={hashtags.value}
-                      onSelect={(currentValue) => {
-                        setValue(currentValue === value ? "" : currentValue);
-                        setOpen(false);
-                        handleHashTagChange(currentValue)
-                      }}
-                    >
-                      {hashtags.label}
-                      <Check
-                        className={cn(
-                          "ml-auto",
-                          value === hashtags.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </div>
-    </div>
-  );
-}
