@@ -42,6 +42,9 @@ export default function AddProduct() {
     setPreviewUrls([...previewUrls, ...newPreviewUrls])
   }
 
+  // Button : Mouse Event
+  // Input : Change Event
+
   // 해시태그 셀랙트박스 선택 혹은 엔터 입력시에 값 추가
   const handleHashTagChange = (tag: string) => {
     // 이미 추가된 태그인지 확인
@@ -50,6 +53,12 @@ export default function AddProduct() {
     }
     setProductHashTags([...productHashTags, tag])
   }
+
+  const handleRemoveHashTag = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const { value } = event.currentTarget
+    setProductHashTags(productHashTags.filter(tag => tag !== value))
+  }
+
 
   const renderSizeFields = () => {
     switch (category) {
@@ -258,12 +267,17 @@ export default function AddProduct() {
             <CardContent className="flex flex-col gap-2 pt-6">
               {/* Tags */}
               <div className='flex justify-start items-center gap-2'>
-                {productHashTags.map((tag, index) => (
-                  <span key={index} className="border hover:border-current hover:font-bold hover:cursor-pointer bg-blue-100 text-blue-800 dark:bg-black dark:text-white rounded-full p-1.5 text-xs">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
+                  {productHashTags.map((tag, index) => (
+                    <button 
+                      key={index}
+                      value={tag}
+                      onClick={handleRemoveHashTag}
+                      className="border hover:border-current hover:font-bold hover:cursor-pointer bg-blue-100 text-blue-800 dark:bg-black dark:text-white rounded-full p-1.5 text-xs"
+                    >
+                      #{tag}
+                    </button>
+                  ))}
+                </div>
               <HashtagContent
                 hashtags={hashtags}
                 value={value}
@@ -349,9 +363,14 @@ export default function AddProduct() {
                 {/* Tags */}
                 <div className='flex justify-start items-center gap-2'>
                   {productHashTags.map((tag, index) => (
-                    <span key={index} className="border hover:border-current hover:font-bold hover:cursor-pointer bg-blue-100 text-blue-800 dark:bg-black dark:text-white rounded-full p-1.5 text-xs">
+                    <button 
+                      key={index}
+                      value={tag}
+                      onClick={handleRemoveHashTag}
+                      className="border hover:border-current hover:font-bold hover:cursor-pointer bg-blue-100 text-blue-800 dark:bg-black dark:text-white rounded-full p-1.5 text-xs"
+                    >
                       #{tag}
-                    </span>
+                    </button>
                   ))}
                 </div>
                 <HashtagContent
