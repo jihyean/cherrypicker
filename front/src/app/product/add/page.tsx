@@ -266,7 +266,7 @@ export default function AddProduct() {
           <Card className="md:hidden">
             <CardContent className="flex flex-col gap-2 pt-6">
               {/* Tags */}
-              <div className='flex justify-start items-center gap-2'>
+              <div className='grid grid-cols-4 items-center gap-2'>
                   {productHashTags.map((tag, index) => (
                     <button 
                       key={index}
@@ -361,7 +361,7 @@ export default function AddProduct() {
             <Card>
               <CardContent className="flex flex-col gap-2 pt-6">
                 {/* Tags */}
-                <div className='flex justify-start items-center gap-2'>
+                <div className='grid grid-cols-4 items-center gap-2'>
                   {productHashTags.map((tag, index) => (
                     <button 
                       key={index}
