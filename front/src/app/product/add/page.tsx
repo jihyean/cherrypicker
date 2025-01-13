@@ -241,13 +241,8 @@ export default function AddProduct() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold">제품 등록</h1>
-          <p className="text-muted-foreground">새로운 제품을 등록합니다</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
-            <Save className="w-4 h-4 mr-2" />
-            임시저장
-          </Button>
           <Button>
             <Send className="w-4 h-4 mr-2" />
             등록하기
@@ -338,7 +333,7 @@ export default function AddProduct() {
                       <button 
                         onClick={() => handleRemoveImage(index)}
                         className='absolute top-1 right-1 opacity-80 text-slate-600 hidden peer-hover:block hover:block'>
-                        <SquareX size={20} className='text-red-400'/>
+                        <SquareX size={32} className='text-red-400'/>
                       </button>
                     </div>
                   ))}
