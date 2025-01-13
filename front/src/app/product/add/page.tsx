@@ -29,9 +29,10 @@ export default function AddProduct() {
   const [category, setCategory] = useState<Category | ''>('')
   const [images, setImages] = useState<File[]>([])
   const [previewUrls, setPreviewUrls] = useState<string[]>([])
+  const [productHashTags, setProductHashTags] = useState<string[]>([]) // 제품 해시태그
 
 
-  const [value, setValue] = useState("")
+  const [value, setValue] = useState("") // 선택된 해시태그 값
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
@@ -39,6 +40,15 @@ export default function AddProduct() {
     
     const newPreviewUrls = files.map(file => URL.createObjectURL(file))
     setPreviewUrls([...previewUrls, ...newPreviewUrls])
+  }
+
+  // 해시태그 셀랙트박스 선택 혹은 엔터 입력시에 값 추가
+  const handleHashTagChange = (tag: string) => {
+    // 이미 추가된 태그인지 확인
+    if (productHashTags.includes(tag)) {
+      return
+    }
+    setProductHashTags([...productHashTags, tag])
   }
 
   const renderSizeFields = () => {
@@ -245,12 +255,21 @@ export default function AddProduct() {
 
           {/* 해시태그 카드 (모바일) */}
           <Card className="md:hidden">
-            <CardContent className="pt-6">
+            <CardContent className="flex flex-col gap-2 pt-6">
+              {/* Tags */}
+              <div className='flex justify-start items-center gap-2'>
+                {productHashTags.map((tag, index) => (
+                  <span key={index} className="border hover:border-current hover:font-bold hover:cursor-pointer bg-blue-100 text-blue-800 dark:bg-black dark:text-white rounded-full p-1.5 text-xs">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
               <HashtagContent
                 hashtags={hashtags}
                 value={value}
                 setValue={setValue}
                 className='md:hidden'
+                handleHashTagChange={handleHashTagChange}
               />
             </CardContent>
           </Card>
@@ -326,12 +345,21 @@ export default function AddProduct() {
           {/* 해시태그 카드 (데스크톱) */}
           <div className="hidden md:block">
             <Card>
-              <CardContent className="pt-6">
+              <CardContent className="flex flex-col gap-2 pt-6">
+                {/* Tags */}
+                <div className='flex justify-start items-center gap-2'>
+                  {productHashTags.map((tag, index) => (
+                    <span key={index} className="border hover:border-current hover:font-bold hover:cursor-pointer bg-blue-100 text-blue-800 dark:bg-black dark:text-white rounded-full p-1.5 text-xs">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
                 <HashtagContent
                   hashtags={hashtags}
                   value={value}
                   setValue={setValue}
                   className="hidden md:block"
+                  handleHashTagChange={handleHashTagChange}
                 />
               </CardContent>
             </Card>
@@ -386,6 +414,8 @@ type HashtagContentProps = {
   value: string; // 현재 선택된 프레임워크 값
   setValue: (value: string) => void; // 선택 값 변경 함수
   className?: string; // 클래스 이름
+
+  handleHashTagChange: (tag: string) => void;
 };
 
 
@@ -394,9 +424,18 @@ function HashtagContent({
   value,
   setValue,
   className,
-
+  handleHashTagChange,
 }: HashtagContentProps) {
   const [open, setOpen] = useState(false)
+
+  // 해시태그 입력 이후 엔터 키 입력시에 태그 추가
+  const handleAddEnterHashTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleHashTagChange(e.currentTarget.value)
+      setOpen(false)
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -416,7 +455,11 @@ function HashtagContent({
           </PopoverTrigger>
           <PopoverContent className={`popover-content-width-full ${className}`}>
             <Command>
-              <CommandInput placeholder="Search hashtags..." className="h-9" />
+              <CommandInput 
+                placeholder="Search hashtags..." 
+                className="h-9"
+                onKeyDown={handleAddEnterHashTag}
+              />
               <CommandList>
                 <CommandEmpty>No hashtag found.</CommandEmpty>
                 <CommandGroup>
@@ -427,6 +470,7 @@ function HashtagContent({
                       onSelect={(currentValue) => {
                         setValue(currentValue === value ? "" : currentValue);
                         setOpen(false);
+                        handleHashTagChange(currentValue)
                       }}
                     >
                       {hashtags.label}
