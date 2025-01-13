@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
-import { ImagePlus, Save, Send } from 'lucide-react'
+import { ImagePlus, Save, Send, SquareX } from 'lucide-react'
 
 import HashtagContent from "@/components/product/common/ProductHashtagContent"
 import ProductAddCategoryContent from "@/components/product/add/ProductAddCategoryContent"
@@ -25,11 +25,23 @@ export default function AddProduct() {
   const [value, setValue] = useState("") // 선택된 해시태그 값
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // 이미지 파일은 3개까지만 업로드 가능
+    if (File.length >= 3) {
+      return
+    }
+
     const files = Array.from(e.target.files || [])
     setImages([...images, ...files])
     
     const newPreviewUrls = files.map(file => URL.createObjectURL(file))
     setPreviewUrls([...previewUrls, ...newPreviewUrls])
+  }
+
+  const handleRemoveImage = (index: number) => {
+    const newImages = images.filter((_, i) => i !== index)
+    const newPreviewUrls = previewUrls.filter((_, i) => i !== index)
+    setImages(newImages)
+    setPreviewUrls(newPreviewUrls)
   }
 
   // Button : Mouse Event
@@ -321,15 +333,22 @@ export default function AddProduct() {
                 <Label>제품 이미지</Label>
                 <div className="grid gap-4 md:grid-cols-3">
                   {previewUrls.map((url, index) => (
-                    <div key={index} className="aspect-square rounded-lg border-2 border-dashed overflow-hidden">
-                      <img src={url} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
+                    <div key={index} className="aspect-square rounded-lg border-2 border-dashed overflow-hidden relative">
+                      <img src={url} alt={`Preview ${index + 1}`} className="w-full h-full object-cover peer" />
+                      <button 
+                        onClick={() => handleRemoveImage(index)}
+                        className='absolute top-1 right-1 opacity-80 text-slate-600 hidden peer-hover:block hover:block'>
+                        <SquareX size={20} className='text-red-400'/>
+                      </button>
                     </div>
                   ))}
-                  <label className="aspect-square rounded-lg border-2 border-dashed flex flex-col items-center justify-center cursor-pointer hover:bg-muted">
-                    <ImagePlus className="w-8 h-8 mb-2 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">이미지 추가</span>
-                    <input type="file" accept="image/*" multiple className="hidden" onChange={handleImageChange} />
-                  </label>
+                  {images.length < 3 && (
+                    <label className="aspect-square rounded-lg border-2 border-dashed flex flex-col items-center justify-center cursor-pointer hover:bg-muted">
+                      <ImagePlus className="w-8 h-8 mb-2 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">이미지 추가</span>
+                      <input type="file" accept="image/*" multiple className="hidden" onChange={handleImageChange} />
+                    </label>
+                  )}
                 </div>
               </div>
             </CardContent>
