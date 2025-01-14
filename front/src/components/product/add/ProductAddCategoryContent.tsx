@@ -9,29 +9,34 @@ import { Label } from "@/components/ui/label"
 
 import { CATEGPRY_FIELD } from "@/types/product"
 
-function ProductAddCategoryContent({ setCategory }: { setCategory: (category: CATEGPRY_FIELD) => void }) {
+type ProductAddCategoryContentProps = {
+  handleChangeCategory: (category: CATEGPRY_FIELD) => void
+  setProductState: (state: string) => void
+}
+
+function ProductAddCategoryContent({ handleChangeCategory, setProductState }: ProductAddCategoryContentProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="category">카테고리</Label>
-        <Select onValueChange={(value) => setCategory(value as CATEGPRY_FIELD)}>
+        <Select onValueChange={(value) => handleChangeCategory(value as CATEGPRY_FIELD)}>
           <SelectTrigger>
             <SelectValue placeholder="카테고리 선택" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="상의">상의</SelectItem>
-            <SelectItem value="하의">하의</SelectItem>
-            <SelectItem value="원피스">원피스</SelectItem>
-            <SelectItem value="가방">가방</SelectItem>
-            <SelectItem value="신발">신발</SelectItem>
-            <SelectItem value="기타">기타</SelectItem>
+            <SelectItem value="top">상의</SelectItem>
+            <SelectItem value="bottom">하의</SelectItem>
+            <SelectItem value="skirt">원피스</SelectItem>
+            <SelectItem value="bag">가방</SelectItem>
+            <SelectItem value="shoes">신발</SelectItem>
+            <SelectItem value="etc">기타</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="status">상품 상태</Label>
-        <Select>
+        <Select onValueChange={(value) => setProductState(value as string)}>
           <SelectTrigger>
             <SelectValue placeholder="상품 상태 선택" />
           </SelectTrigger>

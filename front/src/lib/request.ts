@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 export interface FetchOptions {
 	headers?: {[key: string]: any};
 	method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-	body?: string;
+	body?: string | FormData;
 }
 
 // 로그인이 필요하지 않은 API 요청을 보낼 때 사용하는 함수

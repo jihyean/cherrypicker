@@ -13,16 +13,38 @@ import HashtagContent from "@/components/product/common/ProductHashtagContent"
 import ProductAddCategoryContent from "@/components/product/add/ProductAddCategoryContent"
 
 import { CATEGPRY_FIELD } from '@/types/product'
+import { RequestProductSubmission } from '@/lib/api/product'
 
 
 export default function AddProduct() {
-  const [category, setCategory] = useState<CATEGPRY_FIELD | ''>('')
-  const [images, setImages] = useState<File[]>([])
-  const [previewUrls, setPreviewUrls] = useState<string[]>([])
-  const [productHashTags, setProductHashTags] = useState<string[]>([]) // 제품 해시태그
-
+  const [images, setImages] = useState<File[]>([]) // 제품 이미지
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]) // 제품 미리보기 이미지
 
   const [value, setValue] = useState("") // 선택된 해시태그 값
+  const [productHashTags, setProductHashTags] = useState<string[]>([]) // 제품 해시태그
+
+  const [category, setCategory] = useState<CATEGPRY_FIELD | ''>('') // 해당 제품이 어떤 카테고리에 속하는 지
+  const [prouductState, setProductState] = useState<string>('') // 제품의 상태 
+  const [prouductData, setProductData] = useState<Record<string, string>>({}) // 제품의 데이터
+  
+  const handleChangeCategory = (value: CATEGPRY_FIELD) => {
+    setCategory(value)
+    // setProductData name, option, comment를 제외하고 초기화
+    setProductData({
+      product_name: prouductData.product_name,
+      product_option: prouductData.product_option,
+      product_comment: prouductData.product_comment
+    })
+  }
+
+  const handleChangeProudctData = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target
+    console.log(id, value)
+    setProductData({
+      ...prouductData,
+      [id]: value
+    })
+  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // 이미지 파일은 3개까지만 업로드 가능
@@ -59,97 +81,6 @@ export default function AddProduct() {
   const handleRemoveHashTag = (event: React.MouseEvent<HTMLButtonElement>) => {
     const { value } = event.currentTarget
     setProductHashTags(productHashTags.filter(tag => tag !== value))
-  }
-
-
-  const renderSizeFields = () => {
-    switch (category) {
-      case "상의":
-        return (
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="top_size_total">총장</Label>
-              <Input id="top_size_total" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="top_size_shoulder">어깨너비</Label>
-              <Input id="top_size_shoulder" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="top_size_chest">가슴단면</Label>
-              <Input id="top_size_chest" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="top_size_sleeve">소매길이</Label>
-              <Input id="top_size_sleeve" type="number" />
-            </div>
-          </div>
-        )
-      case "하의":
-        return (
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="bottom_size_total">총장</Label>
-              <Input id="bottom_size_total" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bottom_size_waist">허리단면</Label>
-              <Input id="bottom_size_waist" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bottom_size_hip">엉덩이단면</Label>
-              <Input id="bottom_size_hip" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bottom_size_thigh">허벅지단면</Label>
-              <Input id="bottom_size_thigh" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bottom_size_rise">밑위</Label>
-              <Input id="bottom_size_rise" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="bottom_size_hem">밑단</Label>
-              <Input id="bottom_size_hem" type="number" />
-            </div>
-          </div>
-        )
-      case "원피스":
-        return (
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="skirt_size_total">총장</Label>
-              <Input id="skirt_size_total" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="skirt_size_shoulder">어깨너비</Label>
-              <Input id="skirt_size_shoulder" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="skirt_size_chest">가슴단면</Label>
-              <Input id="skirt_size_chest" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="skirt_size_sleeve">소매길이</Label>
-              <Input id="skirt_size_sleeve" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="skirt_size_hip">엉덩이단면</Label>
-              <Input id="skirt_size_hip" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="skirt_size_waist">허리단면</Label>
-              <Input id="skirt_size_waist" type="number" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="skirt_size_hem">밑단</Label>
-              <Input id="skirt_size_hem" type="number" />
-            </div>
-          </div>
-        )
-      default:
-        return null
-    }
   }
 
   const hashtags = [
@@ -235,6 +166,60 @@ export default function AddProduct() {
     },
   ];
 
+  const handleSubmit = async () => {
+    // FormData 생성
+    const formData = new FormData();
+  
+    // 폼 데이터 추가
+    formData.append("product_name", prouductData.product_name); // 제품명
+    formData.append("product_option", prouductData.product_option); // 제품 옵션
+    formData.append("product_state", prouductState); // 제품 상태 (예제 값 사용)
+    formData.append("product_comment", prouductData.product_comment); // 제품 설명
+    formData.append("product_category", category); // 카테고리
+  
+    // 사이즈 정보 추가
+    if (category === "top") {
+      formData.append("top_size_total", prouductData.top_size_total.toString());
+      formData.append("top_size_shoulder", prouductData.top_size_shoulder.toString());
+      formData.append("top_size_chest", prouductData.top_size_chest.toString());
+      formData.append("top_size_sleeve", prouductData.top_size_sleeve.toString());
+    } else if (category === "bottom") {
+      formData.append("bottom_size_total", prouductData.bottom_size_total.toString());
+      formData.append("bottom_size_waist", prouductData.bottom_size_waist.toString());
+      formData.append("bottom_size_hip", prouductData.bottom_size_hip.toString());
+      formData.append("bottom_size_thigh", prouductData.bottom_size_thigh.toString());
+      formData.append("bottom_size_rise", prouductData.bottom_size_rise.toString());
+      formData.append("bottom_size_hem", prouductData.bottom_size_hem.toString());
+    } else if (category === "skirt") {
+      formData.append("skirt_size_total", prouductData.skirt_size_total.toString());
+      formData.append("skirt_size_shoulder", prouductData.skirt_size_shoulder.toString());
+      formData.append("skirt_size_chest", prouductData.skirt_size_chest.toString());
+      formData.append("skirt_size_sleeve", prouductData.skirt_size_sleeve.toString());
+      formData.append("skirt_size_hip", prouductData.skirt_size_hip.toString());
+      formData.append("skirt_size_waist", prouductData.skirt_size_waist.toString());
+      formData.append("skirt_size_hem", prouductData.skirt_size_hem.toString());
+    }
+  
+    // 해시태그 리스트 추가
+    formData.append("hashtag_name_list", JSON.stringify(productHashTags));
+    
+    // 이미지 추가
+    images.forEach((image) => {
+      formData.append("images", image);
+    });
+
+    console.log(formData);
+
+    // 제품 등록 API 호출
+    const response = await RequestProductSubmission({formData});
+    if (response.error || response.state != 201) {
+      alert(response.error);
+      return;
+    }
+    alert(response.message);
+  };
+  
+
 
   return (
     <div className="container mx-auto py-6">
@@ -243,7 +228,9 @@ export default function AddProduct() {
           <h1 className="text-3xl font-bold">제품 등록</h1>
         </div>
         <div className="flex gap-2">
-          <Button>
+          <Button
+            onClick={handleSubmit}
+          >
             <Send className="w-4 h-4 mr-2" />
             등록하기
           </Button>
@@ -255,7 +242,10 @@ export default function AddProduct() {
           {/* 카테고리 카드 (모바일) */}
           <Card className="md:hidden">
             <CardContent className="pt-6">
-              <ProductAddCategoryContent setCategory={setCategory} />
+              <ProductAddCategoryContent 
+                handleChangeCategory={handleChangeCategory}
+                setProductState={setProductState}
+              />
             </CardContent>
           </Card>
 
@@ -291,20 +281,21 @@ export default function AddProduct() {
             <CardContent className="pt-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">제품명</Label>
-                  <Input id="name" maxLength={30} placeholder="제품명을 입력하세요 (30자 이하)" />
+                  <Label htmlFor="product_name">제품명</Label>
+                  <Input id="product_name" maxLength={30} placeholder="제품명을 입력하세요 (30자 이하)" onChange={handleChangeProudctData} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="option">제품 옵션</Label>
-                  <Input id="option" maxLength={30} placeholder="제품 옵션을 입력하세요 (30자 이하)" />
+                  <Label htmlFor="product_option">제품 옵션</Label>
+                  <Input id="product_option" maxLength={30} placeholder="제품 옵션을 입력하세요 (30자 이하)" onChange={handleChangeProudctData} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="description">제품 설명</Label>
+                  <Label htmlFor="product_comment">제품 설명</Label>
                   <Textarea
-                    id="description"
+                    id="product_comment"
                     maxLength={1000}
                     placeholder="제품 설명을 입력하세요 (1000자 이하)"
                     className="min-h-[200px]"
+                    onChange={handleChangeProudctData}
                   />
                 </div>
               </div>
@@ -312,11 +303,11 @@ export default function AddProduct() {
           </Card>
 
           {/* 사이즈 정보 카드 */}
-          {category && ["상의", "하의", "원피스"].includes(category) && (
+          {category && ["top", "bottom", "skirt"].includes(category) && (
             <Card>
               <CardContent className="pt-6">
                 <Label className="mb-4 block">사이즈 정보</Label>
-                {renderSizeFields()}
+                {renderSizeFields({category, prouductData, handleChangeProudctData})}
               </CardContent>
             </Card>
           )}
@@ -355,7 +346,10 @@ export default function AddProduct() {
           <div className="hidden md:block">
             <Card>
               <CardContent className="pt-6">
-                <ProductAddCategoryContent setCategory={setCategory} />
+                <ProductAddCategoryContent 
+                  handleChangeCategory={handleChangeCategory}
+                  setProductState={setProductState}
+                />
               </CardContent>
             </Card>
           </div>
@@ -394,4 +388,98 @@ export default function AddProduct() {
   )
 }
 
+type SizeFieldsProps = {
+  category: CATEGPRY_FIELD
+  prouductData: Record<string, string>
+  handleChangeProudctData: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+}
 
+const renderSizeFields = ({category, prouductData, handleChangeProudctData}: SizeFieldsProps) => {
+  switch (category) {
+    case "top":
+      return (
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="top_size_total">총장</Label>
+            <Input id="top_size_total" type="number" value={prouductData.top_size_total || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="top_size_shoulder">어깨너비</Label>
+            <Input id="top_size_shoulder" type="number" value={prouductData.top_size_shoulder || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="top_size_chest">가슴단면</Label>
+            <Input id="top_size_chest" type="number" value={prouductData.top_size_chest || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="top_size_sleeve">소매길이</Label>
+            <Input id="top_size_sleeve" type="number" value={prouductData.top_size_sleeve || ''} onChange={handleChangeProudctData} />
+          </div>
+        </div>
+      )
+    case "bottom":
+      return (
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="bottom_size_total">총장</Label>
+            <Input id="bottom_size_total" type="number" value={prouductData.bottom_size_total || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bottom_size_waist">허리단면</Label>
+            <Input id="bottom_size_waist" type="number" value={prouductData.bottom_size_waist || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bottom_size_hip">엉덩이단면</Label>
+            <Input id="bottom_size_hip" type="number" value={prouductData.bottom_size_hip || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bottom_size_thigh">허벅지단면</Label>
+            <Input id="bottom_size_thigh" type="number" value={prouductData.bottom_size_thigh || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bottom_size_rise">밑위</Label>
+            <Input id="bottom_size_rise" type="number" value={prouductData.bottom_size_rise || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bottom_size_hem">밑단</Label>
+            <Input id="bottom_size_hem" type="number" value={prouductData.bottom_size_hem || ''} onChange={handleChangeProudctData} />
+          </div>
+        </div>
+      )
+    case "skirt":
+      return (
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="skirt_size_total">총장</Label>
+            <Input id="skirt_size_total" type="number" value={prouductData.skirt_size_total || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="skirt_size_shoulder">어깨너비</Label>
+            <Input id="skirt_size_shoulder" type="number" value={prouductData.skirt_size_shoulder || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="skirt_size_chest">가슴단면</Label>
+            <Input id="skirt_size_chest" type="number" value={prouductData.skirt_size_chest || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="skirt_size_sleeve">소매길이</Label>
+            <Input id="skirt_size_sleeve" type="number" value={prouductData.skirt_size_sleeve || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="skirt_size_hip">엉덩이단면</Label>
+            <Input id="skirt_size_hip" type="number" value={prouductData.skirt_size_hip || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="skirt_size_waist">허리단면</Label>
+            <Input id="skirt_size_waist" type="number" value={prouductData.skirt_size_waist || ''} onChange={handleChangeProudctData} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="skirt_size_hem">밑단</Label>
+            <Input id="skirt_size_hem" type="number" value={prouductData.skirt_size_hem || ''} onChange={handleChangeProudctData} />
+          </div>
+        </div>
+      )
+    default:
+      return null
+  }
+}
