@@ -91,8 +91,13 @@ class UserAPIView(APIView):
         # @INPUT: User(user_id)
         # 쿠키 삭제
         # 사용자 접속 기록 -> 해제날짜 기록
-        
-        return Response(status=status.HTTP_200_OK)
+        return Response(
+            {   "data": None, 
+                "state": 200, 
+                "message": "로그아웃 성공", 
+                "error": None}, 
+            status=status.HTTP_200_OK
+        )
     
     # 사용자 정보 관리
     def put(self, request):

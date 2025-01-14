@@ -1,5 +1,7 @@
-import { fetchWithoutAuth } from "@/lib/request";
+import { fetchWithoutAuth, fetchWithAuth } from "@/lib/request";
 import { Response } from "@/lib/response";
+import Cookies from 'js-cookie';
+import exp from "constants";
 
 export interface UserModel {
 	user_id: string
@@ -50,6 +52,23 @@ export const RequestRegister = async ({ user_id, password, user_name, user_email
 	const data = await fetchWithoutAuth('/users/account/', {
 		method: 'POST',
 		body: JSON.stringify({ user_id, password, user_name, user_email, user_gender })
+	})
+	return {
+		message: data.message,
+		data: data.data,
+		state: data.state,
+		error: data.error
+	}
+}
+
+export type ResponseLogout = null
+export const RequestLogout = async (): Promise<Response<ResponseLogout>> => {
+  const token = Cookies.get('access_token');  // JWT 토큰을 Cookies에서 가져옴
+  const data = await fetchWithAuth('/users/auth/', {
+		headers: {
+			'Authorization': `Bearer ${token}`,  // JWT 토큰 추가
+		},
+		method: 'DELETE',
 	})
 	return {
 		message: data.message,

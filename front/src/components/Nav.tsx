@@ -1,18 +1,19 @@
 "use client";
 
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Link from 'next/link'
 import { Moon, Sun, CircleUserRound, Mail, Cherry, Menu, X, Camera, Sparkles, Inbox, LogIn, LogOut, UserRoundPlus, ChevronDown, Plus } from 'lucide-react'
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
-import { CalendarDays } from "lucide-react"
+import { CalendarDays } from 'lucide-react'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { RootState } from "@/store"
+import { AppDispatch, RootState } from "@/store"
 import { useRouter } from 'next/navigation'
-
+import Swal from 'sweetalert2';
+import { logout } from '@/store/authSlice';
 
 interface UserData {
   user_id: string;
@@ -24,6 +25,7 @@ interface UserData {
 
 export default function NavBar() {
   const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>();
 
   const { theme, setTheme } = useTheme()
   const [isDarkMode, setIsDarkMode] = useState(false)
@@ -54,6 +56,29 @@ export default function NavBar() {
     document.body.classList.toggle('light-mode')
   }
 
+  // 로그아웃 요청
+  const handleLogout = async () => {
+    try {
+      dispatch(logout());
+      // 로그아웃 성공
+      await Swal.fire({
+        icon: 'success',
+        title: '로그아웃 성공',
+        text: '로그아웃 되었습니다',
+      });
+      router.push('/login'); // 성공 시 메인 페이지로 이동
+    } catch (err) {
+      // 에러 예외처리
+      Swal.fire({
+        icon: 'error',
+        title: '로그아웃 실패',
+        text: '알 수 없는 오류가 발생했습니다.',
+      });
+    }
+  };
+  
+
+
   return (
     <nav className="border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -73,7 +98,7 @@ export default function NavBar() {
               
               {!user && <NavLink href="/login">Login</NavLink>}
               {!user && <NavLink href="/register">Register</NavLink>}
-              {user && <NavLink href="/logout">Logout</NavLink>}
+              {user && <NavLink href="#" onClick={handleLogout}>Logout</NavLink>}
             </div>
             {user && <ProfileHoverCard href="/" user_data={user} />}
             <Button
@@ -100,7 +125,7 @@ export default function NavBar() {
                   {/* <NavLink href="/product"><Inbox/><p className='pt-1'>Product</p></NavLink> */}
                   {!user && <NavLink href="/login"><LogIn/><p className='pt-1'>Login</p></NavLink>}
                   {!user && <NavLink href="/register"><UserRoundPlus/><p className='pt-1'>Register</p></NavLink>}
-                  {user && <NavLink href="/logout"><LogOut/><p className='pt-1'>Logout</p></NavLink>}
+                  {user && <NavLink href="#" onClick={handleLogout}><LogOut/><p className='pt-1'>Logout</p></NavLink>}
                 </div>
               </SheetContent>
             </Sheet>
@@ -111,10 +136,11 @@ export default function NavBar() {
   )
 }
 
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+function NavLink({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
   return (
     <Link
       href={href}
+      onClick={onClick}
       className="flex items-center gap-2 px-1 py-4 text-sm font-semibold text-gray-900 hover:text-gray-700 dark:text-zinc-50 dark:hover:text-zinc-300"
     >
       {children}

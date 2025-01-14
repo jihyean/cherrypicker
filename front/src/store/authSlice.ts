@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { 
 	UserModel, 
-	RequestLogin, RequestRegister,
+	RequestLogin, RequestRegister, RequestLogout,
 	LoginFormModel, RegisterFormModel,
 } from '@/lib/api/auth';
 import Cookies from 'js-cookie';
@@ -50,6 +50,17 @@ export const register = createAsyncThunk(
   }
 );
 
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async () => {
+    const response = await RequestLogout();
+		if (response.state !== 200) {
+			throw new Error(response.message);
+		}
+    return response;
+  }
+);
+
 // export const update = createAsyncThunk(
 // 	'auth/update',
 // 	async ({ username, email, bio, password }: UpdateFormModel) => {
@@ -66,17 +77,6 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    logout: (state) => {
-      state.user = null;
-      state.access_token = null;
-      state.refresh_token = null;
-      Cookies.remove('user');
-      Cookies.remove('access_token');
-      Cookies.remove('refresh_token');
-    },
-    resetRegistrationSuccess: (state) => {
-      state.registrationSuccess = false;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -113,6 +113,23 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Registration failed';
       })
+      .addCase(logout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.loading = false;
+        state.user = null;
+        state.access_token = null;
+        state.refresh_token = null;
+        Cookies.remove('user');
+        Cookies.remove('access_token');
+        Cookies.remove('refresh_token');
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Logout failed';
+      });
 			// .addCase(update.pending, (state) => {
 			// 	state.loading = true;
 			// 	state.error = null;
@@ -131,6 +148,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, resetRegistrationSuccess } = authSlice.actions;
+// export const { logout, resetRegistrationSuccess } = authSlice.actions;
 
 export default authSlice.reducer;

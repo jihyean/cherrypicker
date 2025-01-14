@@ -26,7 +26,7 @@ export const fetchWithoutAuth = async (url: string, options: FetchOptions = {} )
 
 // 로그인이 필요한 API 요청을 보낼 때 사용하는 함수
 export const fetchWithAuth = async (url: string, options: FetchOptions = {} ) => {
-  const token = Cookies.get('token');  // JWT 토큰을 Cookies에서 가져옴
+  const token = Cookies.get('access_token');  // JWT 토큰을 Cookies에서 가져옴
 
   const defaultHeaders = {
     'Content-Type': 'application/json',
