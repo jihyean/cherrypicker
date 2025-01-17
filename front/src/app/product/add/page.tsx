@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
-import { ImagePlus, Save, Send, SquareX } from 'lucide-react'
+import { ImagePlus, Send, SquareX, Crown } from 'lucide-react'
 
 import HashtagContent from "@/components/product/common/ProductHashtagContent"
 import ProductAddCategoryContent from "@/components/product/add/ProductAddCategoryContent"
@@ -326,6 +326,13 @@ export default function AddProduct() {
                         className='absolute top-1 right-1 opacity-80 text-slate-600 hidden peer-hover:block hover:block'>
                         <SquareX size={32} className='text-red-400'/>
                       </button>
+                      {index === 0 && (
+                        <button 
+                          onClick={() => handleRemoveImage(index)}
+                          className='absolute top-1 left-1 text-slate-600'>
+                          <Crown size={32} className='text-amber-500' fill='#FFC107'/>
+                        </button>
+                      )}
                     </div>
                   ))}
                   {images.length < 3 && (
